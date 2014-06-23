@@ -1,0 +1,303 @@
+{
+  "name": "quiet_logistics",
+  "display": "Quiet Logistics",
+  "description": "Interfaces with Quiet Logistics to handle Purchase Order/Transfer Orders",
+  "help": "http://guides.spreecommerce.com/integration/endpoints/quiet_logistics",
+  "icon_url": "quiet_logistics.png",
+  "consumers": [
+    {
+      "name": "receive",
+      "path": "/receive",
+      "description": "get messages from QL's queue",
+      "requires": {
+        "parameters": [
+          {
+            "name": "amazon_access_key",
+            "description": "Amazon access key",
+            "data_type": "string"
+          },
+          {
+            "name": "amazon_secret_key",
+            "description": "Amazon secret key",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_outgoing_queue",
+            "description": "Name of queue to send messages to",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_incoming_queue",
+            "description": "Name of queue to read messages from",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_outgoing_bucket",
+            "description": "S3 bucket for outgoing messages",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_incoming_bucket",
+            "description": "S3 bucket for incoming messages",
+            "data_type": "string"
+          }
+        ]
+      },
+      "recommends": {
+        "messages": ["quiet_logistics:messages:poll"]
+      },
+      "produces": {
+        "messages": [
+          {
+            "message": "quiet_logistics:document:download",
+            "schema": "/quiet_logistics.document.download.json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "process_document",
+      "path": "/process_document",
+      "description": "download document from S3 based on SQS message",
+      "requires": {
+        "parameters": [
+          {
+            "name": "amazon_access_key",
+            "description": "Amazon access key",
+            "data_type": "string"
+          },
+          {
+            "name": "amazon_secret_key",
+            "description": "Amazon secret key",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_outgoing_queue",
+            "description": "Name of queue to send messages to",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_incoming_queue",
+            "description": "Name of queue to read messages from",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_outgoing_bucket",
+            "description": "S3 bucket for outgoing messages",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_incoming_bucket",
+            "description": "S3 bucket for incoming messages",
+            "data_type": "string"
+          }
+        ]
+      },
+      "recommends": {
+        "messages": ["quiet_logistics:document:download"]
+      },
+      "produces": {
+        "messages": [
+          {
+             "message": "ql:shipment:confirm",
+             "schema": "/simparel.shipment.result.json"
+          },
+          {
+            "message": "purchase_order:received",
+            "schema": "/purchase_order.received.json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "send_shipment_order",
+      "path": "/send_shipment_order",
+      "description": "send a shipment order file to S3 and message to SQS",
+      "requires": {
+        "parameters": [
+          {
+            "name": "amazon_access_key",
+            "description": "Amazon access key",
+            "data_type": "string"
+          },
+          {
+            "name": "amazon_secret_key",
+            "description": "Amazon secret key",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_outgoing_queue",
+            "description": "Name of queue to send messages to",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_incoming_queue",
+            "description": "Name of queue to read messages from",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_outgoing_bucket",
+            "description": "S3 bucket for outgoing messages",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_incoming_bucket",
+            "description": "S3 bucket for incoming messages",
+            "data_type": "string"
+          }
+        ]
+      },
+      "recommends": {
+        "messages": ["shipment_order:new", "shipment:ready"]
+      },
+      "produces": {
+        "messages": [
+          {
+             "message": "shipping_order:transmit",
+             "schema": "/shipping_order.transmit.json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "send_purchase_order",
+      "path": "/send_purchase_order",
+      "description": "send a purchase order file to S3 and message to SQS",
+      "requires": {
+        "parameters": [
+          {
+            "name": "amazon_access_key",
+            "description": "Amazon access key",
+            "data_type": "string"
+          },
+          {
+            "name": "amazon_secret_key",
+            "description": "Amazon secret key",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_outgoing_queue",
+            "description": "Name of queue to send messages to",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_incoming_queue",
+            "description": "Name of queue to read messages from",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_outgoing_bucket",
+            "description": "S3 bucket for outgoing messages",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_incoming_bucket",
+            "description": "S3 bucket for incoming messages",
+            "data_type": "string"
+          }
+        ]
+      },
+      "recommends": {
+        "messages": ["purchase_order:new"]
+      },
+      "produces": {
+        "messages": [
+          {
+             "message": "purchase_order:transmit",
+             "schema": "purchase_order.transmit.json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "send_item_profile",
+      "path": "/send_item_profile",
+      "description": "send an item profule document to S3/SQS",
+      "requires": {
+        "parameters": [
+          {
+            "name": "amazon_access_key",
+            "description": "Amazon access key",
+            "data_type": "string"
+          },
+          {
+            "name": "amazon_secret_key",
+            "description": "Amazon secret key",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_outgoing_queue",
+            "description": "Name of queue to send messages to",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_incoming_queue",
+            "description": "Name of queue to read messages from",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_outgoing_bucket",
+            "description": "S3 bucket for outgoing messages",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_incoming_bucket",
+            "description": "S3 bucket for incoming messages",
+            "data_type": "string"
+          }
+        ]
+      },
+      "recommends": {
+        "messages": ["product:update"]
+      },
+      "produces": {
+        "messages": [
+          {
+            "message": "notifcation:info",
+            "schema": "/notification.info.json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "send_rma",
+      "path": "/send_rma",
+      "description": "send an rma document to quiet_logistics",
+      "requires": {
+        "parameters": [
+          {
+            "name": "amazon_access_key",
+            "description": "Amazon access key",
+            "data_type": "string"
+          },
+          {
+            "name": "amazon_secret_key",
+            "description": "Amazon secret key",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_outgoing_queue",
+            "description": "Name of queue to send messages to",
+            "data_type": "string"
+          },
+          {
+            "name": "ql_outgoing_bucket",
+            "description": "S3 bucket for outgoing messages",
+            "data_type": "string"
+          }
+        ]
+      },
+      "recommends": {
+        "messages": ["shipment:confirm"]
+      },
+      "produces": {
+        "messages": [
+          {
+            "message": "notifcation:info",
+            "schema": "/notification.info.json"
+          }
+        ]
+      }
+    }
+  ]
+}

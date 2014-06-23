@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://schemas.quietlogistics.com/V2/RMADocument.xsd"
+attributeFormDefault="unqualified"
+elementFormDefault="qualified" xmlns:p1="http://schemas.quietlogistics.com/V2/RMADocument.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.5">
+<xs:complexType name="RMAType"> <xs:sequence>
+<xs:element name="Line" minOccurs="0" maxOccurs="unbounded"> <xs:complexType>
+<xs:attribute name="LineNo" type="xs:int" use="required" />
+<xs:attribute name="OrderNumber" type="xs:string" use="required" /> <xs:attribute name="ItemNumber" type="xs:string" use="required" /> <xs:attribute name="Quantity" type="xs:int" use="required" />
+<xs:attribute name="SaleUOM" type="xs:string" use="required" /> <xs:attribute name="ReturnReason" type="xs:string" use="required" /> <xs:attribute name="CustomerComment" type="xs:string" use="optional" />
+</xs:complexType> </xs:element>
+</xs:sequence>
+<xs:attribute name="ClientID" type="xs:string" use="required" /> <xs:attribute name="BusinessUnit" type="xs:string" use="required" /> <xs:attribute name="RMANumber" type="xs:string" use="required" /> <xs:attribute name="TrackingNumber" type="xs:string" use="optional" /> <xs:attribute name="Warehouse" type="xs:string" use="optional" />
+</xs:complexType>
+<xs:element name="RMADocument">
+<xs:complexType> <xs:sequence>
+<xs:element name="RMA" type="p1:RMAType" /> </xs:sequence>
+</xs:complexType> </xs:element>
+</xs:schema>
