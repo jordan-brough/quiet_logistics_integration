@@ -17,7 +17,7 @@ module Documents
           xml.BusinessUnit @config['business_unit']
 
           xml.OrderHeader('OrderNumber' => @shipment_number,
-                          'OrderType'   => 'SO',
+                          'OrderType'   => @shipment['order_type'],
                           'OrderDate'   => DateTime.now.iso8601) {
 
             xml.Extension shipment['order_number']
@@ -44,7 +44,7 @@ module Documents
     def line_item_hash(item)
       {
         'ItemNumber'      => item["sku"],
-        'Line'            => @shipment['items'].find_index(item),
+        'Line'            => item['line_number'],
         'QuantityOrdered' => item['quantity'],
         'QuantityToShip'  => item['quantity'],
         'UOM'             => 'EA',
