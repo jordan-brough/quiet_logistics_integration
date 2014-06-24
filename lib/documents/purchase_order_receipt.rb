@@ -14,7 +14,7 @@ module Documents
         id: @po_number,
         status: 'received',
         business_unit: @business_unit,
-        items: assemble_items,
+        line_items: assemble_items,
       }
     end
 
