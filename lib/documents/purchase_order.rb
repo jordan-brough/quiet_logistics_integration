@@ -35,7 +35,7 @@ module Documents
 
           @purchase_order['line_items'].each do |line_item|
 
-            xml.PODetails('Line'            => line_item['line_item_number'],
+            xml.PODetails('Line'            => line_item['line_number'],
                           'ItemNumber'      => line_item["itemno"],
                           'ItemDescription' => line_item['description'],
                           'OrderQuantity'   => line_item['quantity'],
