@@ -8,12 +8,14 @@ module Documents
       @number = @doc.xpath("//@RMANumber").first.text
       @receipt_date = @doc.xpath("//@ReceiptDate").first.text
       @warehouse = @doc.xpath("//@Warehouse").first.text
+      @business_unit = @doc.xpath('//@BusinessUnit').first.value
       @doc.xpath("//@BusinessUnit").first.text
     end
 
     def to_h
       {
-        id: @number,
+        id: "#{@number}-#{Time.now.strftime('%Y%m%d%H%M%S%L')}",
+        rma_number: @number,
         business_unit: @business_unit,
         receipt_date: @receipt_date,
         warehouse: @warehouse,
