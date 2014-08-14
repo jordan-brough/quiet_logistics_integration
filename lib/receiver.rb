@@ -3,7 +3,7 @@ class Receiver
 
   def initialize(queue_name)
     @sqs = AWS::SQS.new
-    @limit = 5
+    @limit = 10
     @queue_name = queue_name
     @count = 0
   end
