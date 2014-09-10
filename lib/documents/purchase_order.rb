@@ -25,6 +25,7 @@ module Documents
             xml.Vendor('ID'         => @purchase_order['vendor']['vendorid'],
                        'Company'    => @purchase_order['vendor']['name'],
                        'Address1'   => @purchase_order['vendor']['address1'],
+                       'Address2'   => @purchase_order['vendor']['address2'],
                        'City'       => @purchase_order['vendor']['city'],
                        'Contact'    => @purchase_order['vendor']['contact'],
                        'State'      => @purchase_order['vendor']['state'],
