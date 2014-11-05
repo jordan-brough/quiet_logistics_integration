@@ -11,13 +11,16 @@ class Receiver
   def receive_messages
     queue = sqs.queues.named(@queue_name)
 
-    queue.receive_message(limit: @limit) do |sqs_message|
-      msg = Messages::MessageParser.parse(sqs_message)
 
-      next if msg.empty?
-      @count += 1
+    4.times do
+      queue.receive_message(limit: @limit) do |sqs_message|
+        msg = Messages::MessageParser.parse(sqs_message)
 
-      yield(msg)
+        next if msg.empty?
+        @count += 1
+
+        yield(msg)
+      end
     end
   end
 end
