@@ -25,33 +25,6 @@ module Documents
       }
     end
 
-    private
-
-    def items_hash(child)
-      { line: child['Line'],
-        item_number: child['ItemNumber'],
-        quantity: child['Quantity'],
-        exception_code: child['ExceptionCode'],
-        tax: child['Tax'],
-        total: child['Total'],
-        substituted_item: child['substituted_item'] }
-    end
-
-    def create_carton_hash(child)
-      @carton = { carton_id: child['CartonId'],
-                  tracking_id: child['TrackingId'],
-                  carrier: child['Carrier'],
-                  carton_number: child['CartonNumber'],
-                  service_level: child['ServiceLevel'],
-                  weight: child['Weight'],
-                  freight_cost: @freight_cost,
-                  line_items: [] }
-
-      @carton[:line_items] << child.children.collect { |ch|
-        { line: ch['Line'],
-          item_number: ch['ItemNumber'],
-          quantity: ch['Quantity'] }}
-    end
   end
 end
 
