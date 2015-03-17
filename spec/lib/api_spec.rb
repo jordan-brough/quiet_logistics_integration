@@ -6,7 +6,7 @@ describe Api do
     Uploader.any_instance.stub(:process)
     Sender.any_instance.stub(:send_message)
 
-    message = Api.send_document('ShipmentOrder', Factories.shipment['shipment'], 'test', 'test', {})
+    message = Api.send_document('ShipmentOrder', Factories.shipment, 'test', 'test', {})
     expect(message).to eq "Succesfully Sent Shipment 12836 to Quiet Logistics"
   end
 
@@ -28,7 +28,7 @@ describe Api do
     Uploader.any_instance.stub(:process)
     Sender.any_instance.stub(:send_message)
 
-    message = Api.send_document('RMADocument', Factories.shipment['shipment'], 'test', 'test')
+    message = Api.send_document('RMADocument', Factories.shipment, 'test', 'test')
     expected = { "notifications"=> [{:level=>"info", :subject=>"RMA Document Successfuly Sent", :description=>"SQS Id:  S3 url: "}]}
 
     expect(message).to eq expected

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Documents
   describe ShipmentOrder do
-    let(:shipment) { Factories.shipment['shipment'] }
+    let(:shipment) { Factories.transfer_order_shipment }
 
     subject { ShipmentOrder.new(shipment, {}) }
 
@@ -12,7 +12,7 @@ module Documents
 
       errors = xsd.validate(xml).collect { |error| error }
 
-      expect(subject.name).to match /_ShipmentOrder_12836/
+      expect(subject.name).to match /^_ShipmentOrder_#{shipment['id']}_.*\.xml/
       expect(errors).to eq []
     end
   end
