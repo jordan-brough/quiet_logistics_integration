@@ -1,4 +1,5 @@
 class Processor
+  class UnknownDocType < StandardError; end
 
   def initialize(bucket)
     @bucket = bucket
@@ -33,7 +34,7 @@ class Processor
     when 'InventoryEventMessage'
       Documents::InventoryAdjustment.new(data)
     else
-      Struct.new(:type).new(:unknown)
+      raise UnknownDocType, type.inspect
     end
   end
 end
