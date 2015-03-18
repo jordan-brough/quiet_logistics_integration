@@ -1,10 +1,8 @@
 module Documents
   class RMAResult
-    attr_reader :type
 
     def initialize(xml)
       @doc  = Nokogiri::XML(xml).remove_namespaces!
-      @type = :rma
       @number = @doc.xpath("//@RMANumber").first.text
       @receipt_date = @doc.xpath("//@ReceiptDate").first.text
       @warehouse = @doc.xpath("//@Warehouse").first.text
@@ -13,6 +11,14 @@ module Documents
     end
 
     def to_h
+      {
+        rmas: [rma],
+      }
+    end
+
+    private
+
+    def rma
       {
         id: "#{@number}-#{Time.now.strftime('%Y%m%d%H%M%S%L')}",
         rma_number: @number,
