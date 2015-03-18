@@ -54,22 +54,22 @@ module Documents
         status: 'shipped',
         business_unit: @business_unit,
         shipped_at: @date_shipped,
-        cartons: cartons_to_h,
+        cartons: cartons,
       }
     end
 
-    def cartons_to_h
+    def cartons
       cartons = @doc.xpath('ql:SOResult/ql:Carton', 'ql' => NAMESPACE)
       cartons.map do |carton|
         {
           :id => carton['CartonId'],
           :tracking => carton['TrackingId'],
-          :line_items => carton_line_items_to_h(carton),
+          :line_items => carton_line_items(carton),
         }
       end
     end
 
-    def carton_line_items_to_h(carton)
+    def carton_line_items(carton)
       contents = carton.xpath('ql:Content', 'ql' => NAMESPACE)
       contents.map do |content|
         {
