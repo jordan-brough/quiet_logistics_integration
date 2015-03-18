@@ -138,6 +138,14 @@ describe QuietLogisticsEndpoint do
           it { expect(subject.size).to eq 1 }
           it { expect(subject[0]['id']).to eq 'H13088556647' }
         end
+
+        describe 'cartons' do
+          subject { json_response['cartons'] }
+          before { make_request }
+
+          it { expect(subject.size).to eq 1 }
+          it { expect(subject[0]['id']).to eq 'S11111111' }
+        end
       end
     end
   end
