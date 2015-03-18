@@ -38,6 +38,7 @@ module Documents
     def to_h
       {
         shipments: [shipment],
+        cartons: cartons,
       }
     end
 
@@ -52,7 +53,6 @@ module Documents
         status: 'shipped',
         business_unit: @business_unit,
         shipped_at: @date_shipped,
-        cartons: cartons,
       }
     end
 
@@ -61,7 +61,11 @@ module Documents
       cartons.map do |carton|
         {
           :id => carton['CartonId'],
+          :shipment_id => @shipment_number,
           :tracking => carton['TrackingId'],
+          :warehouse => @warehouse,
+          :business_unit => @business_unit,
+          :shipped_at => @date_shipped,
           :line_items => carton_line_items(carton),
         }
       end
