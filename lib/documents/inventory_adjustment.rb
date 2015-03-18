@@ -1,13 +1,19 @@
 module Documents
   class InventoryAdjustment
-    attr_reader :type
 
     def initialize(data)
-      @type = :inventory
       @data = data
     end
 
     def to_h
+      {
+        inventories: [inventory],
+      }
+    end
+
+    private
+
+    def inventory
       {
         id: @data['reference_number'],
         business_unit: @data['business_unit'],

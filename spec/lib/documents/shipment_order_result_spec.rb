@@ -3,7 +3,7 @@ require 'spec_helper'
 module Documents
   describe ShipmentOrderResult do
 
-    it 'should convert a document to a hash' do
+    it '#to_h' do
       xml = <<-XML
         <?xml version="1.0" encoding="utf-8"?>
         <SOResult
@@ -52,7 +52,10 @@ module Documents
 
       result = ShipmentOrderResult.new(xml)
 
-      expect(result.to_h).to eq(
+      expect(result.to_h[:shipments]).to be_a Array
+      expect(result.to_h[:shipments].size).to eq 1
+
+      expect(result.to_h[:shipments].first).to eq(
         :id => "H13088556647",
         :tracking => "1Z1111111111111111",
         :warehouse => "DVN",

@@ -12,7 +12,9 @@ module Documents
 
         expect_any_instance_of(Time).to receive("strftime").and_return("20140722132344642")
         h = described_class.new(xml).to_h
-        expect(h[:id]).to eq "1234-20140722132344642"
+        expect(h[:rmas]).to be_a Array
+        expect(h[:rmas].size).to eq 1
+        expect(h[:rmas].first[:id]).to eq "1234-20140722132344642"
       end
     end
   end

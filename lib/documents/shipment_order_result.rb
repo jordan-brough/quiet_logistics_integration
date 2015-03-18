@@ -26,11 +26,8 @@ module Documents
   class ShipmentOrderResult
     NAMESPACE = 'http://schemas.quiettechnology.com/V2/SOResultDocument.xsd'
 
-    attr_reader :type
-
     def initialize(xml)
       @doc = Nokogiri::XML(xml)
-      @type = :shipment
       @shipment_number = @doc.xpath("//@OrderNumber").first.text
       @date_shipped = @doc.xpath("//@DateShipped").first.text
       @freight_cost = @doc.xpath("//@FreightCost").first.text
@@ -42,6 +39,14 @@ module Documents
 
     def to_h
       {
+        shipments: [shipment],
+      }
+    end
+
+    private
+
+    def shipment
+      {
         id: @shipment_number,
         # NOTE: There may multiple tracking numbers. This is just the first.
         tracking: @tracking_number,
@@ -52,8 +57,6 @@ module Documents
         cartons: cartons_to_h,
       }
     end
-
-    private
 
     def cartons_to_h
       cartons = @doc.xpath('ql:SOResult/ql:Carton', 'ql' => NAMESPACE)

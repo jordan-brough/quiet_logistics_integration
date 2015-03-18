@@ -35,11 +35,17 @@ class QuietLogisticsEndpoint < EndpointBase::Sinatra::Base
       begin
         processed = processor.process_doc(msg)
       rescue Processor::UnknownDocType
+        # TODO: Have this return a 4xx/5xx code?
         result 200, "Cannot handle document of type #{msg['document_type']}"
         return
       end
 
-      add_object(processed.type.to_sym, processed.to_h)
+      processed.to_h.each do |data_type, objects|
+        objects.each do |object|
+          add_object(data_type, object)
+        end
+      end
+
       result 200, "Got Data for #{msg['document_name']}"
     rescue => e
       handle_error(e, bucket: bucket)
