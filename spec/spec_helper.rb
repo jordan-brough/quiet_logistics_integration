@@ -9,6 +9,8 @@ require 'rubygems'
 
 Bundler.require(:default, :test, :development)
 
+require 'webmock/rspec'
+
 require_relative '../quiet_logistics_endpoint.rb'
 
 Dir['./spec/support/**/*.rb'].each { |f| require f }

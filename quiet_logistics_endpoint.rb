@@ -30,22 +30,20 @@ class QuietLogisticsEndpoint < EndpointBase::Sinatra::Base
     begin
       bucket = @config['ql_incoming_bucket']
       msg    = @payload['message']
-      data   = Processor.new(bucket).process_doc(msg)
+      processor = Processor.new(bucket)
 
-      if data.type == :unknown
-        message = "Cannot handle document of type #{msg['document_type']}"
-      else
-        add_object(data.type.to_sym, data.to_h)
-        message  = "Got Data for #{msg['document_name']}"
+      begin
+        processed = processor.process_doc(msg)
+      rescue Processor::UnknownDocType
+        result 200, "Cannot handle document of type #{msg['document_type']}"
+        return
       end
 
-      code = 200
+      add_object(processed.type.to_sym, processed.to_h)
+      result 200, "Got Data for #{msg['document_name']}"
     rescue => e
-      message  = e.message
-      code     = 500
+      result 500, e.message
     end
-
-    result code, message
   end
 
   post '/add_shipment' do
