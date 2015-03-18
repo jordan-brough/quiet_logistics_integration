@@ -1,4 +1,5 @@
 source "https://rubygems.org"
+ruby File.read(File.join(File.dirname(__FILE__), '.ruby-version')).strip
 
 gem 'honeybadger'
 gem 'nokogiri'
@@ -9,6 +10,7 @@ gem 'sinatra'
 gem 'tilt', '~> 1.4.1'
 gem 'tilt-jbuilder', require: 'sinatra/jbuilder'
 gem 'endpoint_base', github: 'spree/endpoint_base'
+gem 'rollbar', '~> 1.4.4'
 
 group :test do
   gem 'rspec'

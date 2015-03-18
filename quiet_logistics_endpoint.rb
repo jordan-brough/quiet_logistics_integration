@@ -9,6 +9,10 @@ class QuietLogisticsEndpoint < EndpointBase::Sinatra::Base
                secret_access_key: @config['amazon_secret_key']) if request.request_method == 'POST'
   end
 
+  get '/raise' do
+    raise 'just testing'
+  end
+
   post '/get_messages' do
     begin
       queue = @config['ql_incoming_queue']
@@ -16,14 +20,10 @@ class QuietLogisticsEndpoint < EndpointBase::Sinatra::Base
       receiver = Receiver.new(queue)
       receiver.receive_messages { |msg| add_object :message, msg }
 
-      message  = "recevied #{receiver.count} messages"
-      code     = 200
+      result 200, "recevied #{receiver.count} messages"
     rescue => e
-      message  = e.message
-      code     = 500
+      handle_error(e, queue: queue)
     end
-
-    result code, message
   end
 
   post '/get_data' do
@@ -42,7 +42,8 @@ class QuietLogisticsEndpoint < EndpointBase::Sinatra::Base
       add_object(processed.type.to_sym, processed.to_h)
       result 200, "Got Data for #{msg['document_name']}"
     rescue => e
-      result 500, e.message
+      handle_error(e, bucket: bucket)
+      return
     end
   end
 
@@ -50,52 +51,47 @@ class QuietLogisticsEndpoint < EndpointBase::Sinatra::Base
     begin
       shipment = @payload['shipment']
       message  = Api.send_document('ShipmentOrder', shipment, outgoing_bucket, outgoing_queue, @config)
-      code     = 200
+      result 200, message
     rescue => e
-      message = e.message
-      code    = 500
+      handle_error(e)
     end
-
-    result code, message
   end
 
   post '/add_purchase_order' do
     begin
       order   = @payload['purchase_order']
       message = Api.send_document('PurchaseOrder', order, outgoing_bucket, outgoing_queue, @config)
-      code    = 200
+      result 200, message
     rescue => e
-      message = e.message
-      code    = 500
+      handle_error(e)
     end
-
-    result code, message
   end
 
   post '/add_product' do
     begin
       item    = @payload['product']
       message = Api.send_document('ItemProfile', item, outgoing_bucket, outgoing_queue, @config)
-      code    = 200
+      result 200, message
     rescue => e
-      message = e.message
-      code    = 500
+      handle_error(e)
     end
-
-    result code, message
   end
 
   post '/add_rma' do
     begin
       shipment = @payload['rma']
       message  = Api.send_document('RMADocument', shipment, outgoing_bucket, outgoing_queue, @config)
-      code     = 200
+      result 200, message
     rescue => e
-      message  = e.message
-      code     = 500
+      handle_error(e)
     end
+  end
 
-    result code, message
+  private
+
+  def handle_error(error, extra_params={})
+    Rollbar.error(e, extra_params.merge(payload: @payload))
+    result 500, e.message
   end
 
   def outgoing_queue
