@@ -43,6 +43,55 @@ describe QuietLogisticsEndpoint do
     end
   end
 
+  describe '/get_messages' do
+    let(:config) do
+      super().merge(
+        'ql_incoming_queue' => 'some-ql-queue',
+      )
+    end
+
+    def make_request
+      post '/get_messages', post_data, auth
+    end
+
+    def post_data
+      {
+        'request_id' => '123',
+        'parameters' => config,
+      }.to_json
+    end
+
+    let(:message) do
+      {
+        "id" => "c76dfc90-96ba-4239-a2b3-0f0ff800e502",
+        "document_type" => "ShipmentOrderResult",
+        "document_name" => "SoResultV2_BONOBOS_H47763445062_20150316_164132538.xml",
+        "business_unit" => "BONOBOS",
+      }
+    end
+
+    describe 'response' do
+      before do
+        expect_any_instance_of(Receiver).to receive(:receive_messages).and_yield(message)
+        expect_any_instance_of(Receiver).to receive(:count).and_return(1)
+        make_request
+      end
+
+      specify do
+        expect(last_response.status).to eq 200
+
+        expect(json_response['summary']).to eq 'received 1 messages'
+
+        expect(json_response['messages']).to be_a Array
+        expect(json_response['messages'].size).to eq 1
+
+        received_message = json_response['messages'].first
+
+        expect(received_message).to eq message
+      end
+    end
+  end
+
   describe '/get_data' do
     let(:config) do
       super().merge(

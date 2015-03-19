@@ -20,7 +20,7 @@ class QuietLogisticsEndpoint < EndpointBase::Sinatra::Base
       receiver = Receiver.new(queue)
       receiver.receive_messages { |msg| add_object :message, msg }
 
-      result 200, "recevied #{receiver.count} messages"
+      result 200, "received #{receiver.count} messages"
     rescue => e
       handle_error(e, queue: queue)
     end
