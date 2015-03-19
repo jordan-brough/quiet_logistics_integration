@@ -96,8 +96,8 @@ class QuietLogisticsEndpoint < EndpointBase::Sinatra::Base
   private
 
   def handle_error(error, extra_params={})
-    Rollbar.error(e, extra_params.merge(payload: @payload))
-    result 500, e.message
+    Rollbar.error(error, extra_params.merge(payload: @payload))
+    result 500, error.message
   end
 
   def outgoing_queue
