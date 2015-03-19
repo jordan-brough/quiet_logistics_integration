@@ -50,8 +50,8 @@ describe QuietLogisticsEndpoint do
       )
     end
 
-    def make_request
-      post '/get_data', post_data.to_json, auth
+    def make_request(document_type:)
+      post '/get_data', post_data(document_type: document_type), auth
     end
 
     def stub_s3_response(response)
@@ -60,7 +60,7 @@ describe QuietLogisticsEndpoint do
       ).to_return(response)
     end
 
-    let(:post_data) do
+    def post_data(document_type:)
       {
         'request_id' => '123',
         'parameters' => config,
@@ -70,19 +70,16 @@ describe QuietLogisticsEndpoint do
           'document_name' => 'filename.xml',
           'business_unit' => 'MYBIZ',
         },
-      }
+      }.to_json
     end
 
     context 'with an unhandled document type' do
-      let(:document_type) { 'FooBar' }
-
       before do
         stub_s3_response(status: 200, body: "doesn't matter")
+        make_request(document_type: 'FooBar')
       end
 
       describe 'response' do
-        before { make_request }
-
         specify do
           expect(last_response.status).to eq 200
 
@@ -92,9 +89,9 @@ describe QuietLogisticsEndpoint do
     end
 
     context 'with a ShipmentOrderResult' do
-      let(:document_type) { 'ShipmentOrderResult' }
       before do
         stub_s3_response(status: 200, body: s3_response_body)
+        make_request(document_type: 'ShipmentOrderResult')
       end
 
       let(:s3_response_body) do
@@ -130,8 +127,6 @@ describe QuietLogisticsEndpoint do
       end
 
       describe 'response' do
-        before { make_request }
-
         specify do
           expect(last_response.status).to eq 200
 
@@ -142,6 +137,51 @@ describe QuietLogisticsEndpoint do
 
           expect(json_response['cartons'].size).to eq 1
           expect(json_response['cartons'][0]['id']).to eq 'S11111111'
+        end
+      end
+    end
+
+    context 'with an RMAResultDocument' do
+      before do
+        stub_s3_response(status: 200, body: s3_response_body)
+        make_request(document_type: 'RMAResultDocument')
+      end
+
+      let(:s3_response_body) do
+        <<-XML
+          <?xml version="1.0" encoding="utf-8"?>
+          <RMAResultDocument
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+              xmlns="http://schemas.quietlogistics.com/V2/RMAResultDocument.xsd">
+            <RMAResult
+                ClientID="BONOBOS"
+                BusinessUnit="BONOBOS"
+                RMANumber="H11111111111"
+                ReceiptDate="2015-03-16T13:02:08.667Z"
+                Warehouse="DVN">
+              <Line
+                  LineNo="1"
+                  ItemNumber="1111111"
+                  ReturnUOM="EA"
+                  Quantity="1"
+                  ProductStatus="GOOD"
+                  Notes=""
+                  OrderNumber="H11111111111"
+                  Reason="01" />
+            </RMAResult>
+          </RMAResultDocument>
+        XML
+      end
+
+      describe 'response' do
+        specify do
+          expect(last_response.status).to eq 200
+
+          expect(json_response['summary']).to eq "Got Data for filename.xml"
+
+          expect(json_response['rmas'].size).to eq 1
+          expect(json_response['rmas'][0]['id']).to match /^H11111111111-\d+/
         end
       end
     end
