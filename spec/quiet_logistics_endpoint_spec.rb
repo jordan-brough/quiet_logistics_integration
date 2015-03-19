@@ -26,7 +26,24 @@ describe QuietLogisticsEndpoint do
     }
   end
 
-  describe '#get_data' do
+  describe 'error handling' do
+    context "when an exception occurs" do
+      before do
+        expect(Processor).to receive(:new).and_raise('crash')
+        post '/get_data', {}.to_json, auth
+      end
+
+      describe 'response' do
+        specify do
+          expect(last_response.status).to eq 500
+
+          expect(json_response['summary']).to eq 'crash'
+        end
+      end
+    end
+  end
+
+  describe '/get_data' do
     let(:config) do
       super().merge(
         'ql_incoming_bucket' => 'some-ql-bucket',
@@ -58,22 +75,18 @@ describe QuietLogisticsEndpoint do
 
     context 'with an unhandled document type' do
       let(:document_type) { 'FooBar' }
+
       before do
         stub_s3_response(status: 200, body: "doesn't matter")
       end
 
-      describe 'response.status' do
-        subject { last_response.status }
+      describe 'response' do
         before { make_request }
-        it { should eq 200 }
-      end
 
-      describe 'response.body' do
-        describe 'summary' do
-          subject { json_response['summary'] }
-          before { make_request }
+        specify do
+          expect(last_response.status).to eq 200
 
-          it { should eq "Cannot handle document of type FooBar" }
+          expect(json_response['summary']).to eq "Cannot handle document of type FooBar"
         end
       end
     end
@@ -116,35 +129,19 @@ describe QuietLogisticsEndpoint do
         XML
       end
 
-      describe 'response.status' do
-        subject { last_response.status }
+      describe 'response' do
         before { make_request }
 
-        it { should eq 200 }
-      end
+        specify do
+          expect(last_response.status).to eq 200
 
-      describe 'response.body' do
-        describe 'summary' do
-          subject { json_response['summary'] }
-          before { make_request }
+          expect(json_response['summary']).to eq "Got Data for filename.xml"
 
-          it { should eq "Got Data for filename.xml" }
-        end
+          expect(json_response['shipments'].size).to eq 1
+          expect(json_response['shipments'][0]['id']).to eq 'H13088556647'
 
-        describe 'shipments' do
-          subject { json_response['shipments'] }
-          before { make_request }
-
-          it { expect(subject.size).to eq 1 }
-          it { expect(subject[0]['id']).to eq 'H13088556647' }
-        end
-
-        describe 'cartons' do
-          subject { json_response['cartons'] }
-          before { make_request }
-
-          it { expect(subject.size).to eq 1 }
-          it { expect(subject[0]['id']).to eq 'S11111111' }
+          expect(json_response['cartons'].size).to eq 1
+          expect(json_response['cartons'][0]['id']).to eq 'S11111111'
         end
       end
     end
