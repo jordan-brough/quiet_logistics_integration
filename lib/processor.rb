@@ -28,10 +28,14 @@ class Processor
     when 'ShipmentOrderResult'
       Documents::ShipmentOrderResult.new(data)
     when 'PurchaseOrderReceipt'
+      # Temporarily track whether we are actually processing these
+      Rollbar.info("Proceesing #{type.inspect}")
       Documents::PurchaseOrderReceipt.new(data)
     when 'RMAResultDocument'
       Documents::RMAResult.new(data)
     when 'InventoryEventMessage'
+      # Temporarily track whether we are actually processing these
+      Rollbar.info("Proceesing #{type.inspect}")
       Documents::InventoryAdjustment.new(data)
     else
       raise UnknownDocType, type.inspect
