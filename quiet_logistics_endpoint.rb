@@ -10,6 +10,7 @@ class QuietLogisticsEndpoint < EndpointBase::Sinatra::Base
   end
 
   get '/raise' do
+    @payload = {}
     raise 'just testing'
   end
 
@@ -20,7 +21,7 @@ class QuietLogisticsEndpoint < EndpointBase::Sinatra::Base
       receiver = Receiver.new(queue)
       receiver.receive_messages { |msg| add_object :message, msg }
 
-      result 200, "recevied #{receiver.count} messages"
+      result 200, "received #{receiver.count} messages"
     rescue => e
       handle_error(e, queue: queue)
     end
@@ -85,8 +86,8 @@ class QuietLogisticsEndpoint < EndpointBase::Sinatra::Base
 
   post '/add_rma' do
     begin
-      shipment = @payload['rma']
-      message  = Api.send_document('RMADocument', shipment, outgoing_bucket, outgoing_queue, @config)
+      rma = @payload['rma']
+      message  = Api.send_document('RMADocument', rma, outgoing_bucket, outgoing_queue, @config)
       result 200, message
     rescue => e
       handle_error(e)
