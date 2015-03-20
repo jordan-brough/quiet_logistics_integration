@@ -10,6 +10,7 @@ class QuietLogisticsEndpoint < EndpointBase::Sinatra::Base
   end
 
   get '/raise' do
+    @payload = {}
     raise 'just testing'
   end
 

@@ -43,6 +43,17 @@ describe QuietLogisticsEndpoint do
     end
   end
 
+  describe '/raise' do
+    before do
+      get '/raise', auth
+    end
+
+    specify do
+      expect(last_response.status).to eq 500
+      expect(json_response['summary']).to eq 'just testing'
+    end
+  end
+
   describe '/get_messages' do
     let(:config) do
       super().merge(
