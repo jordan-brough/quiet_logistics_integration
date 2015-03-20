@@ -35,7 +35,8 @@ class QuietLogisticsEndpoint < EndpointBase::Sinatra::Base
 
       begin
         processed = processor.process_doc(msg)
-      rescue Processor::UnknownDocType
+      rescue Processor::UnknownDocType => e
+        Rollbar.error("Cannot handle document type: #{e.inspect}", payload: @payload, bucket: bucket)
         # TODO: Have this return a 4xx/5xx code?
         result 200, "Cannot handle document of type #{msg['document_type']}"
         return
