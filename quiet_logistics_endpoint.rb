@@ -86,8 +86,8 @@ class QuietLogisticsEndpoint < EndpointBase::Sinatra::Base
 
   post '/add_rma' do
     begin
-      shipment = @payload['rma']
-      message  = Api.send_document('RMADocument', shipment, outgoing_bucket, outgoing_queue, @config)
+      rma = @payload['rma']
+      message  = Api.send_document('RMADocument', rma, outgoing_bucket, outgoing_queue, @config)
       result 200, message
     rescue => e
       handle_error(e)

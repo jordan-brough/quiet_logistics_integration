@@ -1,5 +1,6 @@
 #TODO add business_unit / client_id to docs and event_messages
 class Api
+  class UnknownDocType < StandardError; end
 
   def self.send_document(type, content, bucket, queue, config)
     document =
@@ -12,6 +13,8 @@ class Api
       Documents::ItemProfile.new(content, config)
     when 'RMADocument'
       Documents::RMA.new(content, config)
+    else
+      raise UnknownDocType, type.inspect
     end
 
     uploader = Uploader.new(bucket)
