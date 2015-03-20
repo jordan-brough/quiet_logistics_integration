@@ -12,8 +12,6 @@ module Messages
               AcknowledgmentMessage.new(doc, id)
             elsif type == "EventMessage"
               IncomingEventMessage.new(doc, id)
-            elsif type == 'InventoryEventMessage'
-              msg = InventoryEventMessage.new(doc, id)
             else
               {}
             end
