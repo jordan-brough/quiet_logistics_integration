@@ -3,7 +3,7 @@ ruby File.read(File.join(File.dirname(__FILE__), '.ruby-version')).strip
 
 gem 'honeybadger'
 gem 'nokogiri'
-gem 'aws-sdk'
+gem 'aws-sdk', '~>1.29'
 gem 'timecop'
 gem 'multi_json', '~> 1.0'
 gem 'sinatra'
