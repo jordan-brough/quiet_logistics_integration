@@ -23,6 +23,10 @@ class Processor
     case type
     when 'ShipmentOrderResult'
       Documents::ShipmentOrderResult.new(data)
+    when 'PurchaseOrderReceipt'
+      # Temporarily track whether we are actually processing these
+      Rollbar.info("Proceesing #{type.inspect}")
+      Documents::PurchaseOrderReceipt.new(data)
     when 'RMAResultDocument'
       Documents::RMAResult.new(data)
     else
