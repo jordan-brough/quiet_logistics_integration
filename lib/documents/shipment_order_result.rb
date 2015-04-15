@@ -66,7 +66,7 @@ module Documents
           :warehouse => @warehouse,
           :business_unit => @business_unit,
           :shipped_at => @date_shipped,
-          :line_items => carton_line_items(carton),
+          :ql_line_items => carton_line_items(carton),
         }
       end
     end

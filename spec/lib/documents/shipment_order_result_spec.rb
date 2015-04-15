@@ -91,7 +91,7 @@ module Documents
               warehouse: 'DVN',
               business_unit: 'BONOBOS',
               shipped_at: '2015-02-24T15:51:31.0953088Z',
-              line_items: [
+              ql_line_items: [
                 {
                   ql_item_number: "1111111",
                   quantity: 1,
@@ -112,7 +112,7 @@ module Documents
               warehouse: 'DVN',
               business_unit: 'BONOBOS',
               shipped_at: '2015-02-24T15:51:31.0953088Z',
-              line_items: [
+              ql_line_items: [
                 {
                   ql_item_number: "3333333",
                   quantity: 1,
