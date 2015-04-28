@@ -38,7 +38,7 @@ module Documents
     def to_h
       {
         shipments: [shipment],
-        cartons: cartons,
+        quiet_logistics_cartons: cartons,
       }
     end
 

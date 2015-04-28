@@ -73,8 +73,8 @@ module Documents
         end
       end
 
-      describe 'cartons' do
-        let(:cartons) { result.to_h[:cartons] }
+      describe 'quiet_logistics_cartons' do
+        let(:cartons) { result.to_h[:quiet_logistics_cartons] }
 
         it 'should have the expected properties' do
           expect(cartons).to be_a Array
