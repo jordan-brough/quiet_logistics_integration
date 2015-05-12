@@ -106,7 +106,6 @@ module Documents
       lines.map do |line|
         {
           ql_item_number: line['ItemNumber'],
-          quantity: 1,
         }
       end
     end

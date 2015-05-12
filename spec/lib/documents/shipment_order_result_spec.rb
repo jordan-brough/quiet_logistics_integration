@@ -125,7 +125,6 @@ module Documents
                 items: [
                   {
                     ql_item_number: '4444444',
-                    quantity: 1,
                   }
                 ]
               }
