@@ -174,7 +174,7 @@ module Documents
       end
 
       describe 'quantity guard' do
-        context 'if a quantity greater than one is detectd' do
+        context 'if a quantity greater than one is detected' do
           let(:xml) do
             <<-XML
               <?xml version="1.0" encoding="utf-8"?>
@@ -189,7 +189,7 @@ module Documents
                   CartonCount="1"
                   Warehouse="DVN"
                   xmlns="http://schemas.quiettechnology.com/V2/SOResultDocument.xsd">
-                <Line Line="1" ItemNumber="1111111" Quantity="1" ExceptionCode="" Tax="0" Total="0" SubstitutedItem="" />
+                <Line Line="1" ItemNumber="1111111" Quantity="2" ExceptionCode="" Tax="0" Total="0" SubstitutedItem="" />
                 <Carton
                     CartonId="S11111111"
                     TrackingId="1Z1111111111111111"
